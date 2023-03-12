@@ -1,0 +1,41 @@
+.allFeatures{
+    background-color: #f1fdf7;
+    display: flex;
+    justify-content: center;
+    padding: 100px 0;
+    .container{
+        width: 1400px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .left{
+            display: flex;
+            flex-direction: column ;
+            gap: 15px;
+
+            h1{
+                font-weight: bolder
+            }
+
+            .title{
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: bold;
+            }
+
+            p {
+                color: gray;
+                font-size: 18px;
+                line-height: 28px;
+              }
+        }
+
+        .right{
+            video{
+                width: 720px;
+            }
+            
+        }
+    }
+}
