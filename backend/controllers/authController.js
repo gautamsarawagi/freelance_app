@@ -2,6 +2,9 @@ import userModel from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+import { fileSizeFormatter } from "../utils/fileUpload.js";
+import cloudinary from "../utils/cloudinary.js";
+
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 };
@@ -9,7 +12,8 @@ const generateToken = (id) => {
 class authController {
   static createUser = async (req, res, next) => {
     try {
-      const { username, email, password, country, desc } = req.body;
+      const { username, email, password, country, desc, phone, isSeller } =
+        req.body;
 
       if (!username || !email || !password || !country || !desc) {
         res.status(400);
@@ -35,8 +39,36 @@ class authController {
         throw new Error("Username already in use");
       }
 
+      let fileData = {};
+      if (req.file) {
+        let uploadFile;
+        try {
+          uploadFile = await cloudinary.uploader.upload(req.file.path, {
+            folder: "freelance_app",
+            resource_type: "image",
+          });
+        } catch (error) {
+          res.status(400);
+          throw new Error("Image cannot be uploaded");
+        }
+
+        fileData = {
+          fileName: req.file.originalname,
+          filepath: uploadFile.secure_url,
+          fileType: req.file.mimetype,
+          fileSize: fileSizeFormatter(req.file.size, 2),
+        };
+      }
+      
       const newUser = await userModel.create({
-        ...req.body,
+        username:username,
+        email:email,
+        password:password,
+        country:country,
+        desc:desc,
+        img: fileData.filepath,
+        phone:phone,
+        isSeller:isSeller,
       });
 
       if (newUser) {
@@ -117,7 +149,8 @@ class authController {
 
   static logoutUser = async (req, res, next) => {
     try {
-      res.clearCookie("token", {
+      res
+        .clearCookie("token", {
           sameSite: "none",
           secure: true,
         })

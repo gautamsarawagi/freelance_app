@@ -5,7 +5,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import errorHandler from "./middleWares/errorMiddleWare.js"
-
+import path from "path"
 import userRoutes from "./routes/userRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
 
@@ -23,8 +23,9 @@ app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 app.use(express.json())
 app.use(cookieParser())
-app.use(express.urlencoded({extended:false}))
+app.use(express.urlencoded({extended:true}))
 app.use(bodyParser.json())
+app.use("/uploads", express.static(path.join(path.dirname(import.meta.url), "uploads")));
 
 // all the model routes
 
