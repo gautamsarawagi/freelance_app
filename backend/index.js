@@ -8,6 +8,7 @@ import errorHandler from "./middleWares/errorMiddleWare.js"
 import path from "path"
 import userRoutes from "./routes/userRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
+import gigRoutes from "./routes/gigRoutes.js"
 
 dotenv.config()
 
@@ -31,6 +32,7 @@ app.use("/uploads", express.static(path.join(path.dirname(import.meta.url), "upl
 
 app.use("/api/user",userRoutes)
 app.use("/api/auth",authRoutes)
+app.use("/api/gig",gigRoutes)
 
 app.use(errorHandler)
 
